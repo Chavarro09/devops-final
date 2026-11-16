@@ -1,0 +1,7 @@
+.git
+.env
+reportes/
+monitoreo.log
+*.md
+__pycache__/
+*.pyc
