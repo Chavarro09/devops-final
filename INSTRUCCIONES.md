@@ -2,6 +2,7 @@
 
 Cada estudiante despliega en su carpeta `estudianteXX` del droplet esta API de tareas junto con una base de datos PostgreSQL, usando Docker, y entrega evidencias de Git, Linux, Docker, DevSecOps y monitoreo.
 
+- **Repositorio base:** https://github.com/jsansis-utp/devops-final
 - **Servidor:** `178.128.14.98` (acceso por SSH con su usuario).
 - **Su puerto:** `8000 + XX`. Ejemplo: estudiante07 usa el `8007`; estudiante23 usa el `8023`.
 
@@ -38,7 +39,16 @@ La API escribe un log en formato JSON por cada petición; se consulta con `docke
 
 ## Lo que usted debe construir
 
-**1. Git y GitHub.** Haga *fork* de este repositorio en su cuenta de GitHub, clónelo dentro de su carpeta en el droplet y trabaje con commits propios que muestren su avance. Escriba un `README.md` que explique qué hace el proyecto y cómo ponerlo en marcha. Entregue el historial con `git log --oneline --graph`.
+**1. Git y GitHub.** Haga *fork* de https://github.com/jsansis-utp/devops-final en su cuenta de GitHub (botón **Fork**), clone **su fork** dentro de su carpeta en el droplet y trabaje con commits propios que muestren su avance:
+
+```bash
+ssh estudianteXX@178.128.14.98
+cd ~/estudianteXX
+git clone https://github.com/SU_USUARIO/devops-final.git
+cd devops-final
+```
+
+Escriba un `README.md` que explique qué hace el proyecto y cómo ponerlo en marcha. Entregue el historial con `git log --oneline --graph`.
 
 **2. Linux.** En el `README.md`, documente en orden todos los comandos que usó para poner en marcha el proyecto: conexión por SSH, navegación, creación de archivos y carpetas, permisos, despliegue y verificación.
 
