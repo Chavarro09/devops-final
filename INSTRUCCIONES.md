@@ -56,6 +56,22 @@ Escriba un `README.md` que explique qué hace el proyecto y cómo ponerlo en mar
 - `db`: PostgreSQL, con un volumen para persistir los datos y sin publicar su puerto hacia afuera.
 - `api`: construida con el `Dockerfile` de este repositorio, publicada en su puerto (`80XX:5000`) y con las variables del archivo `.env`.
 
+**Obligatorio por ser un servidor compartido:** la primera línea del archivo debe ser `name: estudianteXX`, y cada contenedor debe llevar su prefijo en `container_name`:
+
+```yaml
+name: estudianteXX
+
+services:
+  db:
+    container_name: estXX_db
+    # ...
+  api:
+    container_name: estXX_api
+    # ...
+```
+
+Todos clonan el repositorio en una carpeta llamada `devops-final`, y sin `name` Docker usa ese nombre para el proyecto. En ese caso los 35 estudiantes compartirían el mismo volumen, la misma red y la misma base de datos, y el despliegue de uno sobrescribiría el de otro. Puede comprobar el nombre de su proyecto con `docker compose ls` y sus volúmenes con `docker volume ls | grep estudianteXX`.
+
 **4. DevSecOps.** Cree un script `seguridad.sh` que ejecute y guarde sus resultados en la carpeta `reportes/`:
 - **Gitleaks:** búsqueda de secretos en el repositorio.
 - **Semgrep:** análisis estático del código.
