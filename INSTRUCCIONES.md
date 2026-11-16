@@ -72,6 +72,10 @@ services:
 
 Todos clonan el repositorio en una carpeta llamada `devops-final`, y sin `name` Docker usa ese nombre para el proyecto. En ese caso los 35 estudiantes compartirían el mismo volumen, la misma red y la misma base de datos, y el despliegue de uno sobrescribiría el de otro. Puede comprobar el nombre de su proyecto con `docker compose ls` y sus volúmenes con `docker volume ls | grep estudianteXX`.
 
+**Sobre su puerto de PostgreSQL (54XX):** en este proyecto **no lo use**. La base de datos no se publica en el servidor: el servicio `db` no lleva sección `ports`, y la API se conecta a ella por el puerto interno `5432` a través de la red de Docker. Por eso en el `.env` debe quedar `DB_PORT=5432`; si pone ahí su puerto 54XX, la API no podrá conectarse.
+
+**Contenedores de ejercicios anteriores:** antes de desplegar, revise con `docker ps -a` si tiene contenedores viejos. Si alguno se llama igual que los de este proyecto (`estXX_db`, `estXX_api`), `docker compose up` fallará por nombre duplicado. Deténgalos y elimínelos con `docker stop NOMBRE` y `docker rm NOMBRE`; así también libera memoria del servidor compartido.
+
 **4. DevSecOps.** Cree un script `seguridad.sh` que ejecute y guarde sus resultados en la carpeta `reportes/`:
 - **Gitleaks:** búsqueda de secretos en el repositorio.
 - **Semgrep:** análisis estático del código.
