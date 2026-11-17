@@ -1,5 +1,9 @@
+# Secretos: NUNCA se suben
 .env
-reportes/
-monitoreo.log
+
+# Python
 __pycache__/
 *.pyc
+
+# reportes/ y monitoreo.log SÍ se versionan: son evidencia de la entrega
+# (DevSecOps y monitoreo). Ver README.md.
