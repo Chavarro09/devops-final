@@ -1,0 +1,49 @@
+name: estudiante22
+
+# Proyecto final DevOps - estudiante22
+# - db : PostgreSQL con volumen persistente. NO publica puertos (solo red interna).
+# - api: API de tareas construida con el Dockerfile, publicada en 8022 -> 5000.
+# Las credenciales viven en .env (no se sube a GitHub). Plantilla: .env.example
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: est22_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: est22_api:1.0
+    container_name: est22_api
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${API_PORT:-8022}:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+
+volumes:
+  db_data:
+
+networks:
+  backend:
