@@ -5,11 +5,18 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+# Parches de seguridad del sistema base (Trivy: zlib1g CVE-2026-85091 HIGH)
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
 # Usuario sin privilegios para ejecutar la aplicación
 RUN useradd --create-home --shell /usr/sbin/nologin appuser
 
+# pip actualizado (Trivy: CVE-2025-8869, CVE-2026-13346 y otras de pip 25.0.1)
 COPY app/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip==26.3 \
+    && pip install --no-cache-dir -r requirements.txt
 
 COPY app/ .
 
