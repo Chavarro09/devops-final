@@ -41,6 +41,21 @@ info()  { echo -e "\n\033[1;34m[$(fecha)] $*\033[0m"; }
 ok()    { echo -e "\033[1;32m  ✔ $*\033[0m"; }
 falla() { echo -e "\033[1;31m  ✘ $*\033[0m"; }
 
+# Descarga en silencio las imágenes de las herramientas, para que los mensajes
+# de "Pulling..." no se mezclen con los reportes
+descargar_herramientas() {
+    info "Preparando imágenes de las herramientas"
+    local img
+    for img in "$IMG_GITLEAKS" "$IMG_SEMGREP" "$IMG_SYFT" "$IMG_TRIVY" "$IMG_HADOLINT"; do
+        docker image inspect "$img" >/dev/null 2>&1 || docker pull -q "$img" >/dev/null
+    done
+}
+
+# Si una herramienta no encontró nada, el reporte lo dice en vez de quedar vacío
+sin_hallazgos() {
+    [ -s "$1" ] || echo "$2" > "$1"
+}
+
 # Comprueba que la imagen de la API exista (Syft y Trivy la necesitan)
 asegurar_imagen() {
     if ! docker image inspect "$IMAGEN_API" >/dev/null 2>&1; then
@@ -72,19 +87,29 @@ analisis_estatico() {
         --json-output /src/reportes/semgrep.json \
         > /dev/null 2>"${DIR_REPORTES}/semgrep.log" \
         && ok "reportes/semgrep.txt y semgrep.json" || falla "Semgrep terminó con errores (ver reportes/semgrep.log)"
+    sin_hallazgos "${DIR_REPORTES}/semgrep.txt" \
+        "Semgrep: 0 hallazgos (reglas p/python, p/dockerfile y p/docker-compose). Detalle en semgrep.log y semgrep.json."
 }
 
 # -------------------------------------------------------------- 3. Syft
 generar_sbom() {
     info "3/5 Syft: inventario de dependencias (SBOM) de $IMAGEN_API"
-    docker run --rm -u "$USUARIO" -e HOME=/tmp \
+    # La imagen de Syft no permite escribir en /tmp a un usuario sin
+    # privilegios: se le monta una carpeta temporal propia.
+    local tmp
+    tmp="$(mktemp -d)"
+    docker run --rm -u "$USUARIO" -e HOME=/tmp -e TMPDIR=/tmp \
         --group-add "$(stat -c '%g' "$SOCKET_DOCKER")" \
         -v "${SOCKET_DOCKER}:/var/run/docker.sock" \
+        -v "${tmp}:/tmp" \
         -v "${DIR_REPORTES}:/out" \
         "$IMG_SYFT" "docker:${IMAGEN_API}" -q \
         -o table=/out/syft-sbom.txt \
         -o cyclonedx-json=/out/syft-sbom.cdx.json \
-        && ok "reportes/syft-sbom.txt y syft-sbom.cdx.json" || falla "Syft terminó con errores"
+        2> "${DIR_REPORTES}/syft.log" \
+        && ok "reportes/syft-sbom.txt y syft-sbom.cdx.json" || falla "Syft terminó con errores (ver reportes/syft.log)"
+    rm -rf "$tmp"
+    [ -s "${DIR_REPORTES}/syft.log" ] || rm -f "${DIR_REPORTES}/syft.log"
 }
 
 # ------------------------------------------------------------- 4. Trivy
@@ -108,12 +133,14 @@ revisar_dockerfile() {
     docker run --rm -i "$IMG_HADOLINT" hadolint --no-fail - \
         < "${DIR_PROYECTO}/Dockerfile" > "${DIR_REPORTES}/hadolint.txt" 2>&1 \
         && ok "reportes/hadolint.txt" || falla "Hadolint terminó con errores"
-    [ -s "${DIR_REPORTES}/hadolint.txt" ] || echo "Sin observaciones: el Dockerfile cumple las reglas de Hadolint." > "${DIR_REPORTES}/hadolint.txt"
+    sin_hallazgos "${DIR_REPORTES}/hadolint.txt" \
+        "Hadolint: 0 observaciones. El Dockerfile cumple las reglas de Hadolint."
 }
 
 # Ejecuta los cinco análisis y deja un resumen
 escanear() {
     mkdir -p "$DIR_REPORTES"
+    descargar_herramientas
     asegurar_imagen
     escanear_secretos
     analisis_estatico
