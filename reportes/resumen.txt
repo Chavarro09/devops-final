@@ -1,4 +1,4 @@
-Resumen DevSecOps - estudiante22 - 2026-11-18 02:20:39
+Resumen DevSecOps - estudiante22 - 2026-11-18 02:25:07
 Imagen analizada: est22_api:1.0
 
 Gitleaks : 0 secretos encontrados

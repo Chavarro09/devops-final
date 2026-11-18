@@ -3,8 +3,8 @@
   "Trivy": {
     "Version": "0.69.3"
   },
-  "ReportID": "01a1ec74-c68d-77f4-a668-ca1005134f53",
-  "CreatedAt": "2026-11-18T02:20:38.41352531Z",
+  "ReportID": "01a1ec78-debf-75dd-91b5-c5b5956dcc6c",
+  "CreatedAt": "2026-11-18T02:25:06.751389195Z",
   "ArtifactID": "sha256:d60aeabd662055876dc4e6ad8902dcbd69eb08650b523f671bfca7c7c8541a56",
   "ArtifactName": "est22_api:1.0",
   "ArtifactType": "container_image",
