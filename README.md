@@ -41,6 +41,7 @@ API REST de tareas escrita en Python (Flask + Gunicorn) con base de datos Postgr
 | `docker-compose.yml` | Servicios `db` (PostgreSQL) y `api`, volumen y red. |
 | `.env.example` | Plantilla de variables. Se copia como `.env` (que **no** se sube). |
 | `seguridad.sh` | Análisis DevSecOps (5 herramientas) y función `monitorear`. |
+| `.gitleaks.toml` | Reglas por defecto de Gitleaks más una excepción justificada (falso positivo). |
 | `reportes/` | Resultados de los análisis de seguridad (evidencia). |
 | `monitoreo.log` | Historial con fecha de las verificaciones de monitoreo (evidencia). |
 
@@ -237,7 +238,7 @@ Ejecución en el servidor el 2026-11-18 (UTC). El primer análisis quedó guarda
 
 | Herramienta | Primer análisis | Después de corregir |
 |---|---|---|
-| Gitleaks | 0 secretos | 0 secretos (12 commits revisados) |
+| Gitleaks | 0 secretos | 0 secretos (todo el historial; ver la nota sobre `.gitleaks.toml`) |
 | Semgrep | 0 hallazgos | 0 hallazgos (164 reglas sobre `app.py`, `Dockerfile` y `docker-compose.yml`) |
 | Syft | falló (ver abajo) | 119 componentes en el SBOM |
 | Trivy | 227 CVE (HIGH 48 · MEDIUM 98 · LOW 67 · UNKNOWN 14) — **9 con parche disponible** | 221 CVE (HIGH 48 · MEDIUM 93 · LOW 66 · UNKNOWN 14) — **0 con parche aplicable** |
@@ -259,6 +260,7 @@ Ejecución en el servidor el 2026-11-18 (UTC). El primer análisis quedó guarda
 **Problemas del script encontrados en la primera ejecución y corregidos:**
 - **Syft falló** con `mkdir /tmp/stereoscope-…: permission denied`, porque su imagen no deja escribir en `/tmp` a un usuario sin privilegios. Se le monta una carpeta temporal del host.
 - **Mensajes de descarga en los reportes:** los "Pulling…" de Docker quedaban dentro de los reportes. Ahora las imágenes se descargan antes, en silencio, y Gitleaks se ejecuta con `--no-color`.
+- **Falso positivo de Gitleaks:** al subir `reportes/trivy.json`, Gitleaks marcó 2 "generic-api-key". Era `GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305`, una variable de la imagen oficial `python:3.12-slim` con la huella **pública** de la clave con la que el equipo de Python firma sus versiones. En [`.gitleaks.toml`](.gitleaks.toml) se permite solo esa huella exacta y se mantienen todas las reglas por defecto. Se comprobó que Gitleaks sigue detectando secretos reales, como un token de GitHub de prueba.
 
 ## Monitoreo (función `monitorear`)
 
