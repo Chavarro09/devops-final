@@ -69,7 +69,7 @@ escanear_secretos() {
     info "1/5 Gitleaks: búsqueda de secretos en el historial de Git"
     docker run --rm -u "$USUARIO" \
         -v "${DIR_PROYECTO}:/repo" \
-        "$IMG_GITLEAKS" detect --source /repo --no-banner \
+        "$IMG_GITLEAKS" detect --source /repo --no-banner --no-color \
         --report-format json --report-path /repo/reportes/gitleaks.json \
         --exit-code 0 > "${DIR_REPORTES}/gitleaks.txt" 2>&1 \
         && ok "reportes/gitleaks.json" || falla "Gitleaks terminó con errores"
