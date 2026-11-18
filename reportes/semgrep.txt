@@ -1,0 +1,1 @@
+Semgrep: 0 hallazgos (reglas p/python, p/dockerfile y p/docker-compose). Detalle en semgrep.log y semgrep.json.

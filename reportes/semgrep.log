@@ -1,0 +1,34 @@
+METRICS: Using configs from the Registry (like --config=p/ci) reports pseudonymous rule metrics to semgrep.dev.
+To disable Registry rule metrics, use "--metrics=off".
+Using configs only from local files (like --config=xyz.yml) does not enable metrics.
+
+More information: https://semgrep.dev/docs/metrics
+
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 25 files tracked by git with 164 Code rules:
+                                                                                                                        
+  Language     Rules   Files          Origin      Rules                                                                 
+ ────────────────────────────        ───────────────────                                                                
+  python         151       1          Community     164                                                                 
+  dockerfile       7       1                                                                                            
+  yaml             7       1                                                                                            
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+Some files were skipped or only partially analyzed.
+  Scan was limited to files tracked by git.
+
+(need more rules? `semgrep login` for additional free Semgrep Registry rules)
+
+Ran 164 rules on 3 files: 0 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+If Semgrep missed a finding, please send us feedback to let us know!
+See https://semgrep.dev/docs/reporting-false-negatives/

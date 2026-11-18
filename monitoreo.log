@@ -1,0 +1,3 @@
+[2026-11-18 02:15:40] estado=OK http=200 url=http://localhost:8022/health respuesta={"base_de_datos":"conectada","estado":"ok"} contenedores=est22_api=Up About a minute (healthy);est22_db=Up About a minute (healthy)
+[2026-11-18 02:19:01] estado=OK http=200 url=http://localhost:8022/health respuesta={"base_de_datos":"conectada","estado":"ok"} contenedores=est22_api=Up 37 seconds (healthy);est22_db=Up 4 minutes (healthy)
+[2026-11-18 02:20:40] estado=OK http=200 url=http://localhost:8022/health respuesta={"base_de_datos":"conectada","estado":"ok"} contenedores=est22_api=Up 30 seconds (healthy);est22_db=Up 6 minutes (healthy)

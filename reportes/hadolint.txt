@@ -1,0 +1,1 @@
+Hadolint: 0 observaciones. El Dockerfile cumple las reglas de Hadolint.

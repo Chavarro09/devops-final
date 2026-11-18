@@ -1,0 +1,8 @@
+Resumen DevSecOps - estudiante22 - 2026-11-18 02:15:39
+Imagen analizada: est22_api:1.0
+
+Gitleaks : 0 secretos encontrados
+Semgrep  : 0 hallazgos
+Syft     : ? componentes en el SBOM
+Trivy    : CRITICAL=0, HIGH=48, MEDIUM=98, LOW=67, UNKNOWN=14
+Hadolint : 0 observaciones
