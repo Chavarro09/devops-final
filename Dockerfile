@@ -13,9 +13,10 @@ RUN apt-get update \
 # Usuario sin privilegios para ejecutar la aplicación
 RUN useradd --create-home --shell /usr/sbin/nologin appuser
 
-# pip actualizado (Trivy: CVE-2025-8869, CVE-2026-13346 y otras de pip 25.0.1)
+# pip y setuptools actualizados (Trivy: CVE-2025-8869, CVE-2026-13346 de pip;
+# CVE-2025-47273 HIGH de setuptools)
 COPY app/requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip==26.3 \
+RUN pip install --no-cache-dir --upgrade pip==26.3 setuptools==84.1.0 \
     && pip install --no-cache-dir -r requirements.txt
 
 COPY app/ .
